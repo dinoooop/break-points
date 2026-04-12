@@ -1,4 +1,7 @@
+<<<<<<< HEAD
 
+=======
+>>>>>>> b19ada1430a44eacb890a1a4a6b01aba797d79ce
 const sta = {
   roles: [
     { label: "Admin", value: 1 },
