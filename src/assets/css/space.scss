@@ -1,0 +1,75 @@
+.row {
+    display: flex;
+    flex-wrap: wrap;
+    margin-right: -15px;
+    margin-left: -15px;
+}
+
+// Set space 
+$directions: (
+    t: top,
+    r: right,
+    b: bottom,
+    l: left
+);
+
+@each $short, $full in $directions {
+    @for $i from 1 through 10 {
+        .m#{$short}-#{$i} {
+            margin-#{$full}: #{$i}rem;
+        }
+    }
+}
+
+
+@for $i from 1 through 10 {
+    .p-#{$i} {
+        padding: #{$i}rem;
+    }
+}
+
+@each $short, $full in $directions {
+    @for $i from 1 through 10 {
+        .p#{$short}-#{$i} {
+            padding-#{$full}: #{$i}rem;
+        }
+    }
+}
+
+// Define breakpoints 
+$breakpoints: "-", "-xs-", "-sm-", "-md-", "-lg-";
+
+@each $bp in $breakpoints {
+    @for $i from 1 through 12 {
+        .col#{$bp}#{$i} {
+            position: relative;
+            width: 100%;
+            padding-right: 15px;
+            padding-left: 15px;
+        }
+    }
+}
+
+// Define media queries for breakpoints
+$media-query-breakpoints: (
+    xs: "(max-width: 575.98px)",
+    sm: "(min-width: 576px)",
+    md: "(min-width: 768px)",
+    lg: "(min-width: 992px)"
+);
+
+@function col-width($i) {
+    @return (100% / 12) * $i;
+}
+
+@each $bp, $query in $media-query-breakpoints {
+    @media #{$query} {
+        @for $i from 1 through 12 {
+            .col-#{$bp}-#{$i} {
+                $width: col-width($i);
+                flex: 0 0 $width;
+                max-width: $width;
+            }
+        }
+    }
+}

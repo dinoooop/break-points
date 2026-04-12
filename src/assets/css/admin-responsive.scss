@@ -1,0 +1,49 @@
+.container-admin {
+    .menu {
+        display: none;
+    }
+
+    .close {
+        display: none;
+    }
+
+    /* medium screens (md) */
+    @media (max-width: 992px) {
+        .min-800 {
+            width: 80% !important;
+        }
+    }
+
+    /* small screens (sm) */
+    @media (max-width: 768px) {
+        .checkout-box {
+            width: 100% !important;
+        }
+
+        aside {
+            display: none;
+        }
+
+        .menu {
+            display: block;
+        }
+
+        .close {
+            display: block;
+        }
+
+        .show-desktop {
+            display: none;
+        }
+
+        .show-mobile {
+            display: block;
+        }
+    }
+
+    /* extra small screens (xs) */
+    @media (max-width: 576px) {}
+
+
+
+}

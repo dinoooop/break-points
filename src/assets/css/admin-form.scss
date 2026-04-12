@@ -1,0 +1,163 @@
+@use "./vars.scss" as *;
+
+.container-admin {
+
+    .form-body {
+
+        padding: 2rem;
+
+        .form-group {
+            width: 100%;
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: inline-block;
+            margin-bottom: 0.2rem;
+            color: $color-1;
+        }
+
+        .form-control {
+            width: 100%;
+            display: block;
+            padding: 1rem;
+            border: 1px solid $color-2;
+            border-radius: 5px;
+            background-color: transparent;
+            color: $color-1;
+        }
+
+
+        .submit, .cancel {
+            
+            display: block;
+            width: 100%;
+            padding: 1rem;
+        }
+
+        .cancel {
+            margin-top: 0.5rem;
+            background-color: transparent;
+            border: 1px solid $color-2;
+            color: $color-1;
+            text-align: center;
+        }
+
+        .textarea {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            height: 10rem;
+
+        }
+
+        // Radio =============================================================================
+        .radio-form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 1rem;
+
+            .main-label {
+                font-weight: 600;
+                margin-bottom: 5px;
+            }
+
+            .radio-control {
+                position: relative;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                border: 1px solid $color-2;
+                padding: 12px 14px;
+                border-radius: 10px;
+                font-size: 0.9rem;
+                cursor: pointer;
+
+                input[type="radio"] {
+                    display: none;
+                }
+
+                // outer circle
+                &::after {
+                    content: "";
+                    width: 18px;
+                    height: 18px;
+                    border: 2px solid #007bff;
+                    border-radius: 50%;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    transition: all 0.2s ease;
+                    flex-shrink: 0;
+                }
+
+                // inner dot (using pseudo element trick)
+                // checked state
+                input[type="radio"]:checked+&::after,
+                &:has(input[type="radio"]:checked)::after {
+                    background-color: #007bff;
+                }
+
+                &:has(input[type="radio"]:checked)::after {
+                    border-color: #007bff;
+                }
+
+                &:active {
+                    transform: scale(0.98);
+                }
+            }
+        }
+
+        // Checkbox ===============================
+        .checkbox-form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+
+            label[for="create_mode"] {
+                font-weight: 600;
+                margin-bottom: 5px;
+            }
+
+            .checkbox-control {
+                position: relative;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                padding: 12px 14px;
+                border-radius: 10px;
+                border: 1px solid $color-2;
+                font-size: 0.9rem;
+                cursor: pointer;
+
+                // hide default checkbox
+                input[type="checkbox"] {
+                    display: none;
+                }
+
+                // custom circle (right side)
+                &::after {
+                    content: "";
+                    width: 18px;
+                    height: 18px;
+                    border: 2px solid #007bff;
+                    border-radius: 50%;
+                    transition: all 0.2s ease;
+                    flex-shrink: 0;
+                }
+
+                // checked state
+                input[type="checkbox"]:checked+&::after,
+                &:has(input[type="checkbox"]:checked)::after {
+                    background-color: #007bff;
+                }
+
+                // optional active feel
+                &:active {
+                    transform: scale(0.98);
+                }
+            }
+        }
+
+    }
+
+}
