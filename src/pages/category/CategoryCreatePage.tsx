@@ -5,13 +5,10 @@ import { fomy } from "../../helpers/cssm/fomy";
 import { categoryFieldSet } from "../../bootstrap/stream/categoryFieldSet";
 import InputField from "../../blend/formc/InputField";
 import TextArea from "../../blend/formc/TextArea";
-import Checkbox from "../../blend/formc/Checkbox";
-import { st } from "../../bootstrap/st/st";
 import useCategoryStore from "../../helpers/stores/useCategoryStore";
-import Radio from "../../blend/formc/Radio";
 import Submit from "../../blend/one/Submit";
 import InputCropFile from "../../blend/formc/InputCropFile";
-
+import InputCurrentReading from "../../blend/formc/InputCurrentReading";
 
 const CategoryCreatePage: React.FC = () => {
     const { store, loading, serverError } = useCategoryStore();
@@ -46,8 +43,9 @@ const CategoryCreatePage: React.FC = () => {
         }
 
         try {
+            formValues.sample = 'test'
             await store(fomy.prepareSubmit(formValues));
-            navigate("/admin/categories");
+            navigate(-1);
         } catch { }
     };
 
@@ -55,13 +53,10 @@ const CategoryCreatePage: React.FC = () => {
         <DashboardLayout dashParams={{ title: "Create Category", hasBack: true, hasMenu: false }}>
             <form className="form-body" onSubmit={handleSubmit}>
                 <InputField name="title" fieldSet={fieldSet} formValues={formValues} errors={errors} onChangeForm={onChangeForm} />
+                <InputCurrentReading name="category_current_reading" fieldSet={fieldSet} formValues={formValues} errors={errors} onChangeForm={onChangeForm} />
                 <TextArea name="description" fieldSet={fieldSet} formValues={formValues} errors={errors} onChangeForm={onChangeForm} />
-                <Radio name="mode" fieldSet={fieldSet} formValues={formValues} errors={errors} onChangeForm={onChangeForm} options={st.modes()} />
                 <InputCropFile name="cover" fieldSet={fieldSet} formValues={formValues} errors={errors} onChangeForm={onChangeForm} updateExtraFields={updateExtraFields} />
-
-                {serverError && <p className="error-text">{serverError}</p>}
-                {formError && <p className="error-text">{formError}</p>}
-                <Submit loading={loading} />
+                <Submit loading={loading} serverError={serverError} formError={formError} />
             </form>
         </DashboardLayout>
     );

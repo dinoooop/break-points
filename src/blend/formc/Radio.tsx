@@ -32,8 +32,14 @@ const Radio: React.FC<RadioFieldProps> = ({
 
     const newId = fieldSet[name].id;
     const newLabel = fieldSet[name].label;
+    const rfsd = fieldSet[name].rfsd;
 
     let value = formValues[name] ?? "";
+    
+    if(rfsd && !value) {
+        value = rfsd;
+        formValues[name] = rfsd;
+    }
 
     // Handle case where value is an object (e.g., from a select component)
     if (value && value.id) {
@@ -51,7 +57,7 @@ const Radio: React.FC<RadioFieldProps> = ({
             {newLabel && <label htmlFor={newId} className="main-label">{newLabel}</label>}
 
             {options.map(({ value, label }) => (
-                <label className="radio-control" key={value}>
+                <label className="radio-control sub" key={value}>
                     <input
                         type="radio"
                         name={name}

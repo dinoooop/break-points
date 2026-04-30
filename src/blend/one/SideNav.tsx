@@ -18,6 +18,8 @@ const SideNav: React.FC = () => {
             <ul className="sidenav">
                 <SideNavButton title="Profile" icon="fa-solid fa-address-card" href="/admin/profile" />
                 <SideNavButton title="Categories" icon="fa-solid fa-car" href="/admin/categories" />
+                <SideNavButton title="Subjects" icon="fa-solid fa-book" href="/admin/subjects" />
+                <SideNavButton title="Break Points" icon="fa-solid fa-chart-line" href="/admin/break_points" />
                 <SideNavButton title="Users" icon="fa-solid fa-user" href="/admin/users" />
                 <SideNavButton title="Settings" icon="fa-solid fa-gear" href="/admin/settings" />
                 <li onClick={handleLogout}>

@@ -6,6 +6,15 @@ export const categoryFieldSet = {
         createRule: 'required|string',
         editRule: 'required|string',
     },
+    category_current_reading: {
+        label: 'Current Reading',
+        forms: 'create|edit',
+        dummyValue: 0,
+        // createRule: 'number',
+        // editRule: 'number',
+        defaultValue: 0,
+        description: 'Useful for tracking subject with reading mode.',
+    },
     description: {
         label: 'Description',
         forms: 'create|edit',
@@ -13,13 +22,7 @@ export const categoryFieldSet = {
         createRule: 'required|string',
         editRule: 'required|string',
     },
-    mode: {
-        label: 'Mode',
-        forms: 'create|edit',
-        dummyValue: [],
-        createRule: 'required|string',
-        editRule: 'required|string',
-    },
+    
     cover: {
         label: 'Cover Image',
         forms: 'create|edit',

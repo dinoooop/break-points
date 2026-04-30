@@ -42,13 +42,15 @@ const LoginPage: React.FC = () => {
   };
 
   return (
+    <div className="container-admin">
+            <div className="container ">
     <div className="auth-page bg-dark">
 
-      <div className="auth-logo">
+      <div className="logo">
         {config.appName}
       </div>
 
-      <div className="auth-welcome">
+      <div className="welcome">
         Welcome Back
       </div>
 
@@ -68,6 +70,8 @@ const LoginPage: React.FC = () => {
           </p>
         </div>
       </div>
+    </div>
+    </div>
     </div>
   );
 };

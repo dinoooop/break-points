@@ -30,9 +30,14 @@ const InputField: React.FC<InputFieldProps> = ({
 
   const newId = fieldSet[name].id;
   const newLabel = fieldSet[name].label;
+  const newDescription = fieldSet[name].description?? '';
 
-  const value = formValues[name] ?? "";
+  let value = formValues[name] ?? "";
   const error = errors[name] ?? "";
+
+  if (value == "") {
+    value = fieldSet[name].default_value ?? "";
+  }
 
   let newType: string;
   if (type) {
@@ -63,7 +68,7 @@ const InputField: React.FC<InputFieldProps> = ({
         disabled={disabled}
         placeholder={hideLabel ? newLabel : ''}
       />
-      {description && <p className="field-description">{description}</p>}
+      {newDescription && <p className="field-description">{newDescription}</p>}
       {error && <div className="error-text">{error}</div>}
     </div>
   );

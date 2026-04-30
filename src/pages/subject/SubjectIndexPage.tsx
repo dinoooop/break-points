@@ -1,30 +1,84 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
-import { useAuthStore } from "../../helpers/stores/useAuthStore";
-import { fomy } from "../../helpers/cssm/fomy";
-import InputField from "../../blend/formc/InputField";
-import config from "../../config";
-import { authFieldSet } from "../../bootstrap/stream/authFieldSet";
-import Submit from "../../blend/one/Submit";
+import React, { useEffect, useRef, useState } from "react";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import DashboardLayout from "../../blend/layouts/DashboardLayout";
-import { useRef } from "react";
+import useSubjectStore from "../../helpers/stores/useSubjectStore";
+import useCategoryStore from "../../helpers/stores/useCategoryStore";
+import ActiveBreakPoint from "../../blend/one/ActiveBreakPoint";
 
 const SubjectIndexPage: React.FC = () => {
-    const { login, loading, serverError } = useAuthStore();
-    const fieldSet = fomy.refineFieldSet(authFieldSet, 'login')
-    const rules = fomy.getFormRules(fieldSet, 'login')
+    const { items, index, remove, destroy, serverError } = useSubjectStore();
+    const { item: categoryItem, show: categoryShow } = useCategoryStore();
+
+    const navigate = useNavigate();
+    const [searchParams] = useSearchParams();
+
     const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
     const [showBottomNav, setShowBottomNav] = useState(false);
-
-    const dashParams = {
+    const [touchedId, setTouchedId] = useState<number | null>(null);
+    const [categoryId, setCategoryId] = useState<number | null>(null);
+    const [dashParams, setDashParams] = useState({
         title: "Subjects",
         hasBack: true,
         hasMenu: true,
-    }
+    });
 
-    const handleTouchStart = () => {
+
+
+    useEffect(() => {
+
+        const raw = searchParams.get("category_id");
+
+        if (raw) {
+            const parsed = parseInt(raw);
+            const categoryId = isNaN(parsed) ? null : parsed;
+            setCategoryId(categoryId);
+        }
+
+    }, [searchParams.get("category_id")]);
+
+    useEffect(() => {
+        const params: Record<string, any> = {};
+        if (categoryId) {
+            params.category_id = categoryId;
+            categoryShow(categoryId);
+            index(params);
+        }
+    }, [categoryId]);
+
+
+    useEffect(() => {
+        setDashParams((prev) => ({
+            ...prev,
+            title: categoryItem?.title ?? "Category",
+        }));
+    }, [categoryItem]);
+
+
+    const handleDelete = () => {
+        if (touchedId !== null) {
+            remove(touchedId);
+            destroy(touchedId);
+        }
+        setShowBottomNav(false);
+
+    };
+
+    const handleEdit = () => {
+        if (touchedId !== null) {
+            navigate(`/admin/subjects/${touchedId}/edit`);
+        }
+    };
+
+    const handleDetails = () => {
+        if (touchedId !== null) {
+            navigate(`/admin/subjects/${touchedId}/show`);
+        }
+    };
+
+    const handleTouchStart = (id: number) => {
         timerRef.current = setTimeout(() => {
-            setShowBottomNav(true); // 👈 open
+            setTouchedId(id);
+            setShowBottomNav(true);
         }, 700);
     };
 
@@ -38,33 +92,53 @@ const SubjectIndexPage: React.FC = () => {
     return (
         <DashboardLayout dashParams={dashParams}>
             <div className="body-content">
-                <div className="card-count bg-dark-hover"
-                    onTouchStart={handleTouchStart}
-                    onTouchEnd={handleTouchEnd}
-                    onDoubleClick={() => setShowBottomNav(true)}
-                >
-                    <h2>Bath Towel</h2>
-                    <div className="count-info">
-                        <p>TH: 400</p>
-                        <p>NW: 450</p>
-                        <p className="success-text">RM: 0</p>
-                        <p className="danger-text">EX: 50</p>
+                {serverError && <p className="red-alert">{serverError}</p>}
+
+
+                {items.map((item) => (
+                    <div
+                        className="card-count bg-dark-hover"
+                        key={item.id}
+                        onTouchStart={() => handleTouchStart(item.id)}
+                        onTouchEnd={handleTouchEnd}
+                        onDoubleClick={() => {
+                            setTouchedId(item.id);
+                            setShowBottomNav(true);
+                        }}
+                        onClick={() => navigate(`/admin/break_points?subject_id=${item.id}`)}
+                    >
+                        <ActiveBreakPoint subject={item} category={categoryItem} />
                     </div>
-                </div>
+                ))}
+
+                {
+                    items.length === 0 && (
+                        <div className="empty-state">
+                            <p className="info">No subjects found.</p>
+                            <p><Link to={`/admin/subjects/create?category_id=${categoryId}`}>Create your first subject.</Link></p>
+                        </div>
+                    )
+                }
             </div>
 
-            <div className="floating-add-btn">+</div>
+            <Link to={`/admin/subjects/create?category_id=${categoryId}`}>
+                <div className="floating-btn-bottom-right">+</div>
+            </Link>
 
             <div className={`bottom-nav ${showBottomNav ? "active" : ""}`}>
                 <div className="close-area" onClick={() => setShowBottomNav(false)}></div>
                 <div className="nav-content">
-                    <div className="bottom-nav-item">Edit</div>
-                    <div className="bottom-nav-item color-red">Delete</div>
-                    <div className="bottom-nav-item">Details</div>
-                    <div className="bottom-nav-item">Update CR</div>
+                    <div className="bottom-nav-item" onClick={handleEdit}>
+                        Edit
+                    </div>
+                    <div className="bottom-nav-item" onClick={handleDelete}>
+                        Delete
+                    </div>
+                    <div className="bottom-nav-item" onClick={handleDetails}>
+                        Details
+                    </div>
                 </div>
             </div>
-
         </DashboardLayout>
     );
 };

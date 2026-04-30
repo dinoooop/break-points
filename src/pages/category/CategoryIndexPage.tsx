@@ -1,16 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
-import { useAuthStore } from "../../helpers/stores/useAuthStore";
-import { fomy } from "../../helpers/cssm/fomy";
-import InputField from "../../blend/formc/InputField";
-import config from "../../config";
-import { authFieldSet } from "../../bootstrap/stream/authFieldSet";
-import Submit from "../../blend/one/Submit";
 import DashboardLayout from "../../blend/layouts/DashboardLayout";
-import { useRef } from "react";
-import DisplayCalendar from "../../blend/formc/InputSingleDateCalendar";
 import useCategoryStore from "../../helpers/stores/useCategoryStore";
-import { categoryFieldSet } from "../../bootstrap/stream/categoryFieldSet";
 import { outer } from "../../helpers/cssm/outer";
 import { useNavigate } from "react-router-dom";
 
@@ -18,42 +9,30 @@ const CategoryIndexPage: React.FC = () => {
 
     const { items, index, remove, destroy, serverError } = useCategoryStore();
     const navigate = useNavigate();
-
-    const fieldSet = fomy.refineFieldSet(categoryFieldSet, 'index');
-    const rules = fomy.getFormRules(fieldSet, 'index');
-    const [errors, setErrors] = useState<Record<string, string>>({});
     const [touchedId, setTouchedId] = useState<number | null>(null);
-    const [formValues, setFormValues] = useState(fomy.getFormValuesOrDummy(fieldSet, 'index'));
 
     useEffect(() => {
-        const data = Object.fromEntries(
-            Object.entries(formValues)
-                .filter(([_, value]) => value !== "")
-                .map(([key, value]) => [key, value])
-        );
-        index(data);
+        index();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [formValues]);
-
-
+    }, []);
 
     const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
     const [showBottomNav, setShowBottomNav] = useState(false);
 
 
     const dashParams = {
-        title: "BREAK POINTS",
+        title: "Categories",
         hasBack: false,
         hasMenu: true,
     }
 
     const handleDelete = () => {
-        console.log(touchedId);
-
         if (touchedId !== null) {
             remove(touchedId);
             destroy(touchedId);
         }
+        setShowBottomNav(false);
+
     };
     const handleEdit = () => {
 
@@ -61,14 +40,6 @@ const CategoryIndexPage: React.FC = () => {
             navigate(`/admin/categories/${touchedId}/edit`);
         }
     };
-
-    const onChangeForm = (name: string, value: any) => {
-        const instantNewFormValues = { ...formValues, [name]: value };
-        const newErrors = fomy.validateOne(name, instantNewFormValues, rules);
-        setFormValues(instantNewFormValues);
-        setErrors(prev => ({ ...prev, ...newErrors }));
-    };
-
 
     const handleTouchStart = (id: number) => {
         timerRef.current = setTimeout(() => {
@@ -86,15 +57,8 @@ const CategoryIndexPage: React.FC = () => {
 
     const handleOnClick = (id: number) => {
         // navigate to subjects like normal anchor click
-        navigate(`/admin/subjects?category=${id}`);
+        navigate(`/admin/subjects?category_id=${id}`);
     }
-    const handleDoubleClick = (id: number) => {
-        setTouchedId(id);
-        setShowBottomNav(true);
-
-    }
-
-
 
     return (
         <DashboardLayout dashParams={dashParams}>
@@ -103,10 +67,7 @@ const CategoryIndexPage: React.FC = () => {
 
                 {
                     items.map((item) => (
-                        <div className="card-mini bg-dark-hover"
-
-                            key={item.id}
-                        >
+                        <div className="card bg-dark-hover" key={item.id}>
                             <div className="card-image">
                                 <Link to={`/admin/categories/${item.id}/show`}>
                                     <img
@@ -121,7 +82,7 @@ const CategoryIndexPage: React.FC = () => {
                                 onTouchEnd={handleTouchEnd}
                                 onClick={() => handleOnClick(item.id)}
                             >
-                                <div className="title">{item.title}</div>
+                                <h3>{item.title}</h3>
                                 <p>{item.description}</p>
                             </div>
                         </div>
@@ -132,7 +93,7 @@ const CategoryIndexPage: React.FC = () => {
             </div>
 
             <Link to="/admin/categories/create">
-                <div className="floating-add-btn">+</div>
+                <div className="floating-btn-bottom-right">+</div>
             </Link>
 
             <div className={`bottom-nav ${showBottomNav ? "active" : ""}`}>

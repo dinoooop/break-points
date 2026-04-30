@@ -20,9 +20,6 @@ const InputSingleDateCalendar: React.FC<InputSingleDateCalendarProps> = ({
         throw new Error(`${name} not found`);
     }
 
-    const newId = fieldSet[name].id;
-    const newLabel = fieldSet[name].label;
-
     const value = formValues[name] ?? "";
 
     const parsedDate = new Date(value);
@@ -34,7 +31,7 @@ const InputSingleDateCalendar: React.FC<InputSingleDateCalendarProps> = ({
     
 
     const onSelect = (selected: string) => {
-        console.log(selected);
+        onChangeForm(name, selected);
     };
 
     const firstDay = new Date(year, month, 1).getDay(); // 0 = Sunday
@@ -89,12 +86,6 @@ const InputSingleDateCalendar: React.FC<InputSingleDateCalendarProps> = ({
 
         if (currentDay > daysInMonth) break;
     }
-
-
-    const onChangeInputField = (e: React.ChangeEvent<HTMLInputElement>) => {
-        onChangeForm(name, e.target.value);
-    };
-
     return (
         <div className="display-calendar bg-dark-hover">
             <table border={1} cellPadding={5} cellSpacing={0}>

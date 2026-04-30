@@ -1,32 +1,97 @@
 @use "./vars.scss" as *;
 
-.bg-white {
-    background-color: $white;
-}
+.container-admin {
+    .bg-white {
+        background-color: $white;
+    }
 
-.bg-grey {
-    background-color: $grey;
-}
+    .bg-grey {
+        background-color: $grey;
+    }
 
 
 
-.bg-grey,
-.bg-white {
+    .bg-grey,
+    .bg-white {
 
-    h1,
-    h2,
-    h3,
-    h4,
-    h5,
-    h6,
-    p {
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6,
+        p {
+            color: $color-4;
+        }
+
+        a {
+            color: $color-2;
+
+        }
+
+        a.btn {
+            color: $color-2;
+        }
+
+        .btn {
+            background-color: $color-2;
+            color: $white;
+        }
+
+        .btn:hover {
+            background-color: $color-3;
+        }
+    }
+
+    .bg-dark {
+        background-color: $color-4;
+
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6,
+        p,
+        i {
+            color: $color-1;
+        }
+
+        a {
+            color: $color-2;
+        }
+
+
+
+        
+
+        .color-success {
+            color: $success;
+        }
+
+        .color-danger {
+            color: $danger;
+        }
+    }
+
+    .bg-theme {
+        background-color: $color-2;
         color: $color-4;
+
+        a {
+            color: $color-4;
+        }
+
+        i {
+            color: $color-4;
+        }
     }
 
-    a {
-        color: $color-2;
-
+    .bg-dark-hover {
+        background-color: $color-3;
+        color: $color-1;
     }
+
 
     a.btn {
         color: $color-2;
@@ -34,63 +99,39 @@
 
     .btn {
         background-color: $color-2;
-        color: $white;
+        color: $color-4;
+        border: 1px solid $color-2;
     }
 
     .btn:hover {
         background-color: $color-3;
-    }
-}
-
-.bg-dark {
-    background-color: $color-4;
-
-    h1,
-    h2,
-    h3,
-    h4,
-    h5,
-    h6,
-    p,
-    i {
         color: $color-1;
     }
 
-    a {
+
+    .bg-theme {
+        background-color: $color-2;
+    }
+
+    .bg-dark {
+        background-color: $color-4;
+    }
+
+    .color-theme {
         color: $color-2;
     }
 
-
-
-    .success-text {
-        color: $success ;
+    .color-dark {
+        color: $color-4;
     }
 
-    .danger-text {
-        color: $danger ;
+    .bg-success {
+        background-color: $success !important;
     }
-}
 
-.bg-theme {
-    background-color: $color-2;
-    color: $color-4;
-}
-.bg-dark-hover {
-    background-color: $color-3;
-    color: $color-1;
-}
+    .bg-danger {
+        background-color: $danger !important;
+    }
 
 
-a.btn {
-    color: $color-2;
-}
-
-.btn {
-    background-color: $color-2;
-    color: $color-4;
-    border: 1px solid $color-2;
-}
-
-.btn:hover {
-    background-color: $color-3;
 }

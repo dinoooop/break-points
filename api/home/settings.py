@@ -44,6 +44,8 @@ INSTALLED_APPS = [
     # Local apps
     'account',
     'category',
+    'subject',
+    'break_point',
     'assist'
 ]
 

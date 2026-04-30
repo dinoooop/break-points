@@ -1,7 +1,3 @@
-<<<<<<< HEAD
-
-=======
->>>>>>> b19ada1430a44eacb890a1a4a6b01aba797d79ce
 const sta = {
   roles: [
     { label: "Admin", value: 1 },
@@ -57,8 +53,8 @@ const sta = {
     { label: "Linkedin", key: "linkedin", icon: "fa-linkedin" },
   ],
   modes: [
-    { label: "Date Type", value:"date"},
-    { label: "Reading Type", value:"reading"},
+    { label: "Date Type", value:"date_type"},
+    { label: "Reading Type", value:"reading_type"},
   ]
 };
 

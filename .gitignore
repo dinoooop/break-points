@@ -28,3 +28,4 @@ trash
 .env
 .env.local
 .env.production
+AGENTS.md

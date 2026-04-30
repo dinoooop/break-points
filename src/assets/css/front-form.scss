@@ -1,0 +1,31 @@
+@use "./vars.scss" as *;
+
+.front-form {
+
+    .form-group {
+        width: 100%;
+        margin-bottom: 1rem;
+    }
+
+    .form-group label {
+        display: inline-block;
+        margin-bottom: 0.2rem;
+        color: $color-1;
+    }
+
+    .form-control {
+        width: 100%;
+        display: block;
+        padding: 1rem;
+        border: 1px solid $color-2;
+        border-radius: 5px;
+        background-color: transparent;
+        color: $color-1;
+    }
+
+    .textarea {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        height: 10rem;
+
+    }
+}
