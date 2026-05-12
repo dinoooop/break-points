@@ -6,6 +6,10 @@ proportional_measurements = {
         "width": 50,
         "height": 50,
     },
+    "avatar": {
+        "width": 50,
+        "height": 50,
+    },
     "cover_category": {
         "width": 422,
         "height": 422,

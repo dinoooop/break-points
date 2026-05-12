@@ -3,18 +3,18 @@ export const userFieldSet = {
         forms: 'edit',
         editRule: 'required|number',
     },
-    first_name: {
+    full_name: {
         label: 'Full Name',
         forms: 'create|edit',
         dummyValue: 'David Grec',
         createRule: 'required|string',
-        editRule: 'sometimes|required|string',
+        editRule: 'required|string',
     },
     email: {
         forms: 'create|edit',
         dummyValue: 'grec@mail.com',
-        createRule: 'required|string',
-        editRule: 'sometimes|required|string',
+        createRule: 'required|email',
+        editRule: 'required|email',
     },
     password: {
         forms: 'create',
@@ -39,11 +39,11 @@ export const userFieldSet = {
     },
     // user profile fields
     phone: {
-        forms: 'create|edit',
+        forms: 'edit',
         dummyValue: '+12 556 669 36',
     },
     about: {
-        forms: 'create|edit',
+        forms: 'edit',
         dummyValue: 'A sample text',
     },
     avatar: {

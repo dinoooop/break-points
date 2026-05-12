@@ -17,6 +17,10 @@ import BreakPointIndexPage from "./pages/break_point/BreakPointIndex";
 import BreakPointCreatePage from "./pages/break_point/BreakPointCreatePage";
 import BreakPointEditPage from "./pages/break_point/BreakPointEditPage";
 import BreakPointShowPage from "./pages/break_point/BreakPointShowPage";
+import UserIndexPage from "./pages/user/UserIndexPage";
+import UserCreatePage from "./pages/user/UserCreatePage";
+import UserEditPage from "./pages/user/UserEditPage";
+import UserShowPage from "./pages/user/UserShowPage";
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
@@ -37,6 +41,10 @@ createRoot(document.getElementById('root')!).render(
         <Route path="/admin/break_points/create" element={<BreakPointCreatePage />} />
         <Route path="/admin/break_points/:id/edit" element={<BreakPointEditPage />} />
         <Route path="/admin/break_points/:id/show" element={<BreakPointShowPage />} />
+        <Route path="/admin/users" element={<UserIndexPage />} />
+        <Route path="/admin/users/create" element={<UserCreatePage />} />
+        <Route path="/admin/users/:id/edit" element={<UserEditPage />} />
+        <Route path="/admin/users/:id/show" element={<UserShowPage />} />
 
       </Routes>
     </BrowserRouter>

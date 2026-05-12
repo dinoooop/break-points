@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'corsheaders',
     # Local apps
     'account',
+    'userapp',
     'category',
     'subject',
     'break_point',
