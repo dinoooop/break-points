@@ -32,7 +32,6 @@ const UserCreatePage: React.FC = () => {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-
         const validated = fomy.validateMany(formValues, rules);
         if (!validated.allErrorsFalse) {
             setErrors(validated.updatedErrors);
@@ -41,8 +40,12 @@ const UserCreatePage: React.FC = () => {
         }
 
         try {
-            await store(fomy.prepareSubmit(formValues));
-            navigate(-1);
+            formValues.action = "admin_create_user";
+            const submitData = fomy.prepareSubmit(formValues);
+            await store(submitData);
+            if (!serverError && !loading) {
+                navigate(-1);
+            }
         } catch (err) {
             console.error(err);
         }

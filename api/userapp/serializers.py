@@ -1,207 +1,172 @@
+# userapp/serializers.py
+
 from django.contrib.auth.models import User
-from django.contrib.auth.password_validation import validate_password
 from rest_framework import serializers
-from .models import Profile
 
-class UserSerializer(serializers.ModelSerializer):
-    """Serializer that exposes `phone`, `about`, and `avatar` as top-level
-    fields on the User payload while storing them on the related Profile model.
 
-    Important behaviour:
-    - Reads: top-level fields are returned from Profile (if it exists).
-    - Writes: top-level fields are accepted and the create/update methods will
-      create or update the Profile accordingly (no nested `profile` key).
+class UserSerializer(serializers.Serializer):
+    """
+    Single serializer to validate multiple forms based on `action`.
+
+    Supported actions:
+    - admin_create_user
+    - admin_edit_user
+    - user_edit_profile
+    - user_edit_security
     """
 
-    phone = serializers.CharField(required=False, allow_blank=True, allow_null=True)
-    about = serializers.CharField(required=False, allow_blank=True, allow_null=True)
-    avatar = serializers.CharField(required=False, allow_blank=True, allow_null=True)
+    ACTION_CHOICES = [
+        "admin_create_user",
+        "admin_edit_user",
+        "user_edit_profile",
+        "user_edit_security",
+    ]
 
-    action = serializers.CharField(write_only=True, required=False)
-    old_password = serializers.CharField(write_only=True, required=False, allow_blank=True)
-    new_password = serializers.CharField(write_only=True, required=False, allow_blank=True)
-    confirm_password = serializers.CharField(write_only=True, required=False, allow_blank=True)
+    # Hidden field sent by client
+    action = serializers.ChoiceField(choices=ACTION_CHOICES)
 
-    class Meta:
-        model = User
-        fields = [
-            "id",
-            "username",    # kept for compatibility but we'll fill it from email if missing
-            "email",
-            "password", # field only for create
-            "first_name", # consider this as full_name
-            "is_active",
-            "phone",
-            "about",
-            "avatar",
-            # security/action fields (write-only)
-            "action",
-            "old_password",
-            "new_password",
-            "confirm_password",
-        ]
-        read_only_fields = ["id", "is_active"]
-        extra_kwargs = {
-            # password is write-only. We'll enforce required-on-create in validate()
-            "password": {"write_only": True},
-            "email": {"required": True},
-            "username": {"required": False},  # we'll set it automatically if not provided
-        }
+    # Common fields
+    full_name = serializers.CharField(required=False, allow_blank=False)
+    email = serializers.EmailField(required=False)
+    password = serializers.CharField(
+        required=False,
+        allow_blank=False,
+        min_length=7,
+        write_only=True,
+    )
 
-    def to_representation(self, instance):
-        """Return top-level profile fields taken from the related Profile if present.
-        This keeps the serialized payload flat (no nested `profile` key).
-        """
-        data = super().to_representation(instance)
-        # fetch profile safely
-        profile = getattr(instance, 'profile', None)
-        if profile:
-            data['phone'] = profile.phone
-            data['about'] = profile.about
-            data['avatar'] = profile.avatar
-        else:
-            # ensure keys exist and are null when profile missing
-            data['phone'] = None
-            data['about'] = None
-            data['avatar'] = None
-        return data
+    phone = serializers.CharField(
+        required=False,
+        allow_blank=True,
+        allow_null=True,
+        max_length=15,
+    )
+    about = serializers.CharField(
+        required=False,
+        allow_blank=True,
+        allow_null=True,
+    )
+    avatar = serializers.CharField(
+        required=False,
+        allow_blank=True,
+        allow_null=True,
+        max_length=100,
+    )
+
+    # Security fields
+    old_password = serializers.CharField(
+        required=False,
+        allow_blank=False,
+        write_only=True,
+    )
+    new_password = serializers.CharField(
+        required=False,
+        allow_blank=False,
+        min_length=7,
+        write_only=True,
+    )
+    confirm_new_password = serializers.CharField(
+        required=False,
+        allow_blank=False,
+        write_only=True,
+    )
 
     def validate(self, attrs):
+        action = attrs.get("action")
+
+        # ------------------------------------------------------------------
+        # admin_create_user
+        # Required:
+        # - full_name
+        # - email
+        # - password (min_length already enforced)
+        # ------------------------------------------------------------------
+        if action == "admin_create_user":
+            self._require_fields(attrs, ["full_name", "email", "password"])
+
+            # Email is used as username, so must be unique
+            if User.objects.filter(username=attrs["email"]).exists():
+                raise serializers.ValidationError({
+                    "email": "A user with this email already exists."
+                })
+            attrs["username"] = attrs["email"] 
+            attrs["first_name"] = attrs["full_name"]
+            return attrs
+        # ------------------------------------------------------------------
+        # admin_edit_user
+        # Required:
+        # - full_name
+        # - email
+        # Optional:
+        # - password (if provided, min_length already enforced)
+        # ------------------------------------------------------------------
+        elif action == "admin_edit_user":
+            self._require_fields(attrs, ["full_name", "email"])
+
+            # Password may be omitted, null, or empty.
+            # If null is sent, remove it so min_length is not checked.
+            if attrs.get("password") in [None, ""]:
+                attrs.pop("password", None)
+            attrs["username"] = attrs["email"] 
+            attrs["first_name"] = attrs["full_name"]
+            return attrs
+
+        # ------------------------------------------------------------------
+        # user_edit_profile
+        # Required:
+        # - full_name
+        # - email
+        # ------------------------------------------------------------------
+        elif action == "user_edit_profile":
+            self._require_fields(attrs, ["full_name", "email"])
+            attrs["username"] = attrs["email"] 
+            attrs["first_name"] = attrs["full_name"]
+            return attrs
+
+        # ------------------------------------------------------------------
+        # user_edit_security
+        # Required:
+        # - old_password
+        # - new_password
+        # - confirm_new_password
+        # Checks:
+        # - new_password == confirm_new_password
+        # - old_password matches current user password (if request context exists)
+        # ------------------------------------------------------------------
+        elif action == "user_edit_security":
+            self._require_fields(
+                attrs,
+                ["old_password", "new_password", "confirm_new_password"]
+            )
+
+            if attrs["new_password"] != attrs["confirm_new_password"]:
+                raise serializers.ValidationError({
+                    "confirm_new_password": "Passwords do not match."
+                })
+
+            # Validate old password against logged-in user
+            request = self.context.get("request")
+            if request and request.user.is_authenticated:
+                if not request.user.check_password(attrs["old_password"]):
+                    raise serializers.ValidationError({
+                        "old_password": "Old password is incorrect."
+                    })
+            attrs["password"] = attrs["new_password"]
+            return attrs
+
+    def _require_fields(self, attrs, fields):
         """
-        - Ensure username exists by copying from email when not provided.
-        - Enforce password required on create only.
-        - If action == 'update_security', validate old/new/confirm passwords and run password validators.
-        - If password is present (create OR explicit update via 'password' field), validate it with Django validators.
+        Helper to ensure required fields are present and not empty.
         """
-        request = self.context.get('request')
-        is_create = getattr(self, "instance", None) is None
+        errors = {}
 
-        # Ensure username present (derive from email if missing)
-        if attrs.get("email"):
-            attrs["username"] = attrs["email"]
+        for field in fields:
+            value = attrs.get(field)
 
-        # On create, password must be present
-        password = attrs.get("password")
-        if is_create and not password:
-            raise serializers.ValidationError({"password": "This field is required for creating a user."})
+            if value is None:
+                errors[field] = "This field is required."
+            elif isinstance(value, str) and value.strip() == "":
+                errors[field] = "This field is required."
 
-        # If action is update_security, enforce security-specific validations
-        new_password = attrs.get("new_password")
-        if new_password:
-            # must be authenticated
-            if not request or not hasattr(request, "user") or not request.user.is_authenticated:
-                raise serializers.ValidationError("Authentication required to change password.")
-
-            old_password = attrs.get("old_password")
-            confirm_password = attrs.get("confirm_password")
-
-            # ensure required
-            missing = {}
-            if not old_password:
-                raise serializers.ValidationError({"message": "Old password is required."})
-            if not new_password:
-                raise serializers.ValidationError({"message": "new password is required."})
-            if not confirm_password:
-                raise serializers.ValidationError({"message": "confirm password is required."})
-            
-            # check old password correctness
-            user = request.user
-            if not user.check_password(old_password):
-                raise serializers.ValidationError({"message": "Old password is incorrect."})
-
-            if new_password != confirm_password:
-                raise serializers.ValidationError({"message": "New password and confirm password are not matching."})
-
-        return attrs
-
-    def create(self, validated_data):
-        # extract profile-like fields (they were sent at top-level)
-        phone = validated_data.pop("phone", None)
-        about = validated_data.pop("about", None)
-        avatar = validated_data.pop("avatar", None)
-
-        # remove security/action fields if present (they are not user model fields)
-        validated_data.pop("action", None)
-        validated_data.pop("old_password", None)
-        validated_data.pop("new_password", None)
-        validated_data.pop("confirm_password", None)
-
-        password = validated_data.pop("password", None)
-        user = User.objects.create(**validated_data)
-        if password:
-            user.set_password(password)
-            user.save()
-
-        # create profile if any profile data present
-        profile_data = {}
-        if phone is not None:
-            profile_data["phone"] = phone
-        if about is not None:
-            profile_data["about"] = about
-        if avatar is not None:
-            profile_data["avatar"] = avatar
-
-        if profile_data:
-            Profile.objects.create(user=user, **profile_data)
-
-        return user
-
-    def update(self, instance, validated_data):
-        """
-        Update user fields. Supports:
-         - normal profile update (email, first_name, phone, about, avatar)
-         - security update when validated_data['action'] == 'update_security'
-           (will set the new password using validated_data['new_password'])
-        """
-
-        # Determine if this is a security update
-        action = validated_data.pop("action", None)
-
-        # extract profile-like fields (they were sent at top-level)
-        phone = validated_data.pop("phone", None)
-        about = validated_data.pop("about", None)
-        avatar = validated_data.pop("avatar", None)
-
-        # security fields
-        old_password = validated_data.pop("old_password", None)
-        new_password = validated_data.pop("new_password", None)
-        confirm_password = validated_data.pop("confirm_password", None)
-
-        # If this is the security action, just change password on the current user (instance)
-        if new_password is not None:
-            # NOTE: validation already checked old_password/new_password/confirm_password
-            if new_password:
-                instance.set_password(new_password)
-                instance.save()
-            return instance
-
-        # Otherwise proceed with normal update flow (edit)
-        # If developer included `password` field directly in edit (not recommended),
-        # we'll accept and set it — otherwise password is optional and not required.
-        password = validated_data.pop("password", None)
-
-        print("updating user")
-        print(f"validated_data: {validated_data}")
-
-        # update user fields (email, first_name, username, etc.)
-        for attr, value in validated_data.items():
-            setattr(instance, attr, value)
-
-        if password:
-            instance.set_password(password)
-
-        instance.save()
-
-        # update or create profile
-        profile_defaults = {}
-        if phone is not None:
-            profile_defaults["phone"] = phone
-        if about is not None:
-            profile_defaults["about"] = about
-        if avatar is not None:
-            profile_defaults["avatar"] = avatar
-
-        if profile_defaults:
-            Profile.objects.update_or_create(user=instance, defaults=profile_defaults)
-
-        return instance
+        if errors:
+            raise serializers.ValidationError(errors)

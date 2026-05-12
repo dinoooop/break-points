@@ -56,8 +56,9 @@ const UserEditPage: React.FC = () => {
             return;
         }
 
-        const submitData = fomy.prepareSubmit(formValues);
         try {
+            formValues.action = "admin_edit_user";
+            const submitData = fomy.prepareSubmit(formValues);
             await update(submitData);
             if (!serverError && !loading) {
                 navigate(-1);
