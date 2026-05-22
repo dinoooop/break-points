@@ -1,17 +1,15 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import DashboardLayout from "../../blend/layouts/DashboardLayout";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import InputField from "../../blend/formc/InputField";
-import InputCropFile from "../../blend/formc/InputCropFile";
 import Submit from "../../blend/one/Submit";
 import { userFieldSet } from "../../bootstrap/stream/userFieldSet";
 import { fomy } from "../../helpers/cssm/fomy";
 import useUserStore from "../../helpers/stores/useUserStore";
-import TextArea from "../../blend/formc/TextArea";
 import { useAuthStore } from "../../helpers/stores/useAuthStore";
 
 const UserEditPage: React.FC = () => {
-    const { update, loading, serverError, show, item } = useUserStore();
+    const { update, loading, serverError } = useUserStore();
     const { user } = useAuthStore();
 
 

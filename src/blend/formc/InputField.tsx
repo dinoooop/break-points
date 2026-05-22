@@ -7,7 +7,6 @@ interface InputFieldProps {
   onChangeForm: (name: string, value: any) => void;
   errors: Record<string, string>;
   type?: string;
-  description?: string;
   disabled?: boolean;
   hideLabel?: boolean;
 }
@@ -19,7 +18,6 @@ const InputField: React.FC<InputFieldProps> = ({
   errors,
   onChangeForm,
   type,
-  description,
   disabled = false,
   hideLabel= false,
 }) => {

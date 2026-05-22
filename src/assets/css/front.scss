@@ -1,5 +1,6 @@
 // home.scss
 @use "./vars.scss" as *;
+@use "sass:color";
 
 
 
@@ -7,7 +8,7 @@
     min-height: 100vh;
     background: linear-gradient(180deg,
             $color-4 0%,
-            darken($color-4, 2%) 100%);
+            color.adjust($color-4, $lightness: -2%) 100%);
 }
 
 /* Header */
@@ -74,7 +75,7 @@
     transition: 0.2s ease;
 
     &:hover {
-        background: lighten($color-2, 5%);
+        background: color.adjust($color-2, $lightness: 5%);
     }
 }
 

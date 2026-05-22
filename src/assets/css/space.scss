@@ -60,7 +60,7 @@
     );
 
     @function col-width($i) {
-        @return (100% / 12) * $i;
+        @return calc(100% / 12) * $i;
     }
 
     @each $bp, $query in $media-query-breakpoints {

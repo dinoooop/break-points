@@ -1,15 +1,11 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import DashboardLayout from "../../blend/layouts/DashboardLayout";
 import { fomy } from "../../helpers/cssm/fomy";
 import InputField from "../../blend/formc/InputField";
 import Submit from "../../blend/one/Submit";
 import useBreakPointStore from "../../helpers/stores/useBreakPointStore";
-import useSubjectStore from "../../helpers/stores/useSubjectStore";
-import Select from "../../blend/formc/Select";
-import type { OptionItem } from "../../blend/formc/Select";
 import { breakPointFieldSet } from "../../bootstrap/stream/breakPointFieldSet";
-import Radio from "../../blend/formc/Radio";
 import TextArea from "../../blend/formc/TextArea";
 
 const BreakPointEditPage: React.FC = () => {
@@ -51,7 +47,7 @@ const BreakPointEditPage: React.FC = () => {
         e.preventDefault();
 
         const validated = fomy.validateMany(formValues, rules);
-        formValues.subject = item?.subject?.id;
+        formValues.subject = (item && typeof item.subject === 'object')? item?.subject?.id: item?.subject;
         
         if (!validated.allErrorsFalse) {
             setErrors(validated.updatedErrors);
