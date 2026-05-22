@@ -121,14 +121,14 @@
 
     border-radius: 20px;
 
-    padding: 25px;
+    padding: 5rem 2rem;
 
     display: flex;
     align-items: center;
     gap: 1rem;
     flex-direction: column;
 
-    text-align: left;
+    text-align: center;
 
     .mobile-icon {
         font-size: 42px;
@@ -142,6 +142,14 @@
     p {
         color: rgba(255, 255, 255, 0.75);
         line-height: 1.6;
+    }
+
+    .btn {
+        background-color: $color-2;
+        border: 1px solid $white;
+        margin-top: 2rem;
+        padding: 1rem 2rem;
+
     }
 }
 

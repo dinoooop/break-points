@@ -20,13 +20,13 @@ def get_tokens_for_user(user):
 
 @api_view(['POST'])
 def register(request):
-    full_name = request.data.get('full_name', '').strip()
+    first_name = request.data.get('first_name', '').strip()
     email = request.data.get('email', '').strip().lower()
     password = request.data.get('password', '')
     confirm_password = request.data.get('confirm_password', '')
 
     # Validation
-    if not all([full_name, email, password, confirm_password]):
+    if not all([first_name, email, password, confirm_password]):
         return Response({'error': 'All fields are required.'}, status=status.HTTP_400_BAD_REQUEST)
 
     if password != confirm_password:
@@ -39,7 +39,7 @@ def register(request):
     user = User.objects.create(
         username=email,
         email=email,
-        first_name=full_name,
+        first_name=first_name,
         password=make_password(password)
     )
 
@@ -49,7 +49,7 @@ def register(request):
         'message': 'Registration successful.',
         'user': {
             'id': user.id,
-            'full_name': user.first_name,
+            'first_name': user.first_name,
             'email': user.email,
             'avatar': user.profile.avatar if hasattr(user, 'profile') else None
         },
@@ -75,7 +75,7 @@ def login(request):
         'message': 'Login successful.',
         'user': {
             'id': user.id,
-            'full_name': user.first_name,
+            'first_name': user.first_name,
             'email': user.email,
             'is_staff': user.is_staff,
             'avatar': user.profile.avatar if hasattr(user, 'profile') else None

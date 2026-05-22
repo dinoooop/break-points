@@ -71,9 +71,10 @@ const CategoryIndexPage: React.FC = () => {
                             <div className="card-image">
                                 <Link to={`/admin/categories/${item.id}/show`}>
                                     <img
-                                        src={`${outer.showImage(item.cover, 'thumb')}`}
+                                        src={`${outer.showImage(item.cover, 'thumb', 'general')}`}
                                         alt={item.title}
                                         loading="lazy"
+                                        className="display-thumb-img"
                                     />
                                 </Link>
                             </div>

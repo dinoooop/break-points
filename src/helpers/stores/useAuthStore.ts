@@ -4,7 +4,7 @@ import config from '../../config';
 
 interface User {
     id: number;
-    full_name: string;
+    first_name: string;
     email: string;
     is_staff: boolean;
     avatar: string;

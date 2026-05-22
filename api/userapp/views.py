@@ -23,6 +23,7 @@ def user_list(request):
     """
     List all users (paginated). Optionally filter by query params if you add filters.
     """
+    # get all user with profile data
     users = User.objects.all().order_by('-id')
     users = apply_filters(users, request.query_params)
     paginator = CustomPagination()

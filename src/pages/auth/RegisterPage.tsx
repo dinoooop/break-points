@@ -55,7 +55,7 @@ const RegisterPage: React.FC = () => {
 
       <div className="form-container">
         <form className="front-form" onSubmit={handleSubmit} noValidate={true}>
-          <InputField name="full_name" fieldSet={fieldSet} formValues={formValues} errors={errors} onChangeForm={onChangeForm} hideLabel={true} />
+          <InputField name="first_name" fieldSet={fieldSet} formValues={formValues} errors={errors} onChangeForm={onChangeForm} hideLabel={true} />
           <InputField name="email" fieldSet={fieldSet} formValues={formValues} errors={errors} onChangeForm={onChangeForm} hideLabel={true} />
           <InputField name="password" fieldSet={fieldSet} formValues={formValues} errors={errors} onChangeForm={onChangeForm} hideLabel={true} />
           <InputField name="confirm_password" fieldSet={fieldSet} formValues={formValues} errors={errors} onChangeForm={onChangeForm} hideLabel={true} />

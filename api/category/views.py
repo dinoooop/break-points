@@ -8,7 +8,8 @@ from assist.utils.CustomPagination import CustomPagination
 
 @api_view(['GET'])
 def category_list(request):
-    categories = Category.objects.all().order_by('-id')
+    # get category based on user
+    categories = Category.objects.filter(user=request.user).order_by('-id')
     paginator = CustomPagination()
     result_page = paginator.paginate_queryset(categories, request)
     serializer = CategorySerializer(result_page, many=True)
@@ -26,6 +27,7 @@ def category_show(request, pk):
 @api_view(['POST'])
 def category_store(request):
     data = request.data.copy()
+    data['user'] = request.user.id
     data["cover"] = img_save_crop(request, 'cover')
     if data["cover"]:
         img_resize(data["cover"], "cover_category")

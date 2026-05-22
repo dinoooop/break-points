@@ -1,6 +1,6 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
 import DashboardLayout from "../../blend/layouts/DashboardLayout";
+import { useNavigate, useParams } from "react-router-dom";
 import InputField from "../../blend/formc/InputField";
 import InputCropFile from "../../blend/formc/InputCropFile";
 import Submit from "../../blend/one/Submit";
@@ -8,17 +8,20 @@ import { userFieldSet } from "../../bootstrap/stream/userFieldSet";
 import { fomy } from "../../helpers/cssm/fomy";
 import useUserStore from "../../helpers/stores/useUserStore";
 import TextArea from "../../blend/formc/TextArea";
+import { useAuthStore } from "../../helpers/stores/useAuthStore";
 
-const UserCreatePage: React.FC = () => {
-    const { store, loading, serverError } = useUserStore();
+const UserEditPage: React.FC = () => {
+    const { update, loading, serverError, show, item } = useUserStore();
+    const { user } = useAuthStore();
+
 
     const navigate = useNavigate();
-    const fieldSet = fomy.refineFieldSet(userFieldSet, "create");
-    const rules = fomy.getFormRules(fieldSet, "create");
+    const fieldSet = fomy.refineFieldSet(userFieldSet, "security");
+    const rules = fomy.getFormRules(fieldSet, "security");
 
     const [errors, setErrors] = useState<Record<string, string>>({});
     const [formError, setFormError] = useState<string>("");
-    const [formValues, setFormValues] = useState<Record<string, unknown>>(() => fomy.getFormValuesOrDummy(fieldSet, "create"));
+    const [formValues, setFormValues] = useState<Record<string, unknown>>(() => fomy.getFormValuesOrDummy(fieldSet, "security"));
 
     const onChangeForm = (name: string, value: unknown) => {
         const instantNewFormValues = { ...formValues, [name]: value };
@@ -27,9 +30,7 @@ const UserCreatePage: React.FC = () => {
         setErrors((prev) => ({ ...prev, ...(newErrors ?? {}) }));
     };
 
-    const updateExtraFields = (newFormValue: Record<string, unknown>) => {
-        setFormValues((prev) => ({ ...prev, ...newFormValue }));
-    };
+    
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -41,9 +42,10 @@ const UserCreatePage: React.FC = () => {
         }
 
         try {
-            formValues.action = "admin_create_user";
+            formValues.action = "user_edit_security";
+            formValues.id = user?.id;
             const submitData = fomy.prepareSubmit(formValues);
-            await store(submitData);
+            await update(submitData);
             if (!serverError && !loading) {
                 navigate(-1);
             }
@@ -53,18 +55,15 @@ const UserCreatePage: React.FC = () => {
     };
 
     return (
-        <DashboardLayout dashParams={{ title: "Create User", hasBack: true, hasMenu: false }}>
+        <DashboardLayout dashParams={{ title: "Update Security", hasBack: true, hasMenu: false }}>
             <form className="form-body" onSubmit={handleSubmit}>
-                <InputField name="first_name" fieldSet={fieldSet} formValues={formValues} errors={errors} onChangeForm={onChangeForm} />
-                <InputField name="email" fieldSet={fieldSet} formValues={formValues} errors={errors} onChangeForm={onChangeForm} />
-                <InputField name="password" fieldSet={fieldSet} formValues={formValues} errors={errors} onChangeForm={onChangeForm} />
-                <InputField name="phone" fieldSet={fieldSet} formValues={formValues} errors={errors} onChangeForm={onChangeForm} />
-                <TextArea name="about" fieldSet={fieldSet} formValues={formValues} errors={errors} onChangeForm={onChangeForm} />                
-                <InputCropFile name="avatar" fieldSet={fieldSet} formValues={formValues} errors={errors} onChangeForm={onChangeForm} updateExtraFields={updateExtraFields} imgCropKey="default" />
+                <InputField name="old_password" fieldSet={fieldSet} formValues={formValues} errors={errors} onChangeForm={onChangeForm} />
+                <InputField name="new_password" fieldSet={fieldSet} formValues={formValues} errors={errors} onChangeForm={onChangeForm} />
+                <InputField name="confirm_password" fieldSet={fieldSet} formValues={formValues} errors={errors} onChangeForm={onChangeForm} />
                 <Submit loading={loading} serverError={serverError} formError={formError} />
             </form>
         </DashboardLayout>
     );
 };
 
-export default UserCreatePage;
+export default UserEditPage;

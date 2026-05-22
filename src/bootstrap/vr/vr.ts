@@ -89,10 +89,14 @@ export class vr {
                 (formValues as any)?.[sameField] ?? null;
 
             if (value !== otherValue) {
-                return `The ${name} field must match ${sameField}.`;
+                return `The ${this.removeUnderScore(name)} field must match ${this.removeUnderScore(sameField)}.`;
             }
         }
 
         return "";
+    }
+
+    static removeUnderScore(name: string): string {
+        return name.replace(/_/g, " ");
     }
 }

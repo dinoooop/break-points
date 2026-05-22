@@ -114,10 +114,12 @@ export class outer {
   static showImage(
     img: string | null | undefined,
     type?: string | null,
+    defaultType?: string | null | 'general',
   ): string {
-    if (img && type == 'original') return `${config.server}/media/uploads/${img}`;
-    if (img && type) return `${config.server}/media/uploads/${this.insertTypePrefix(img, type)}`;
-    return `${config.images}/placeholder.png`;
+    if (img && img != '#' && type == 'original') return `${config.server}/media/uploads/${img}`;
+    if (img && img != '#' && type) return `${config.server}/media/uploads/${this.insertTypePrefix(img, type)}`;
+    return `${config.images}/default-${defaultType}.png`;
+    
   }
 
   static insertTypePrefix(filename: string, type: string): string {

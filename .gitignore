@@ -29,4 +29,3 @@ trash
 .env.local
 .env.production
 AGENTS.md
-api/venv

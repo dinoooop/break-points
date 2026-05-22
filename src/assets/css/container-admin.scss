@@ -157,6 +157,11 @@
         /* visible */
     }
 
+    .display-thumb-img {
+        width: 100%;
+        object-fit: cover;
+    }
+
 
 
 
@@ -167,6 +172,7 @@
         display: flex;
         align-items: center;
         gap: 1rem;
+            padding: 1rem;
 
         &:active {
             background-color: #2a2a2a; // your pressed color
@@ -183,7 +189,6 @@
         }
 
         .card-content {
-            padding: 1rem;
             width: 100%;
 
 

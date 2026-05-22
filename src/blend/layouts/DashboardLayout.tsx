@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 import { useNavigate } from "react-router-dom";
 import SideNav from "../one/SideNav";
 import { useAuthStore } from "../../helpers/stores/useAuthStore";
+import { outer } from "../../helpers/cssm/outer";
 
 interface DashboardLayoutProps {
     children: ReactNode;
@@ -31,27 +32,25 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children, dashParams 
 
     return (
         <div className="container-admin">
-            <div className="container ">
-                <aside id="sidenav" className={viewSidenav ? "display-aside" : ""}>
-                    <div className="nav-section bg-theme">
-
-                        <div className="nav-section-nav">
-                            <div className="nav-section-header">
-                                <img
-                                    src="/images/avatar.png"
-                                    loading="lazy"
-                                    className="profile-pic"
-                                />
-                                <h3 className="profile-name">John Doe</h3>
-                            </div>
-
-                            <SideNav />
+            <aside id="sidenav" className={viewSidenav ? "display-aside" : ""}>
+                <div className="nav-section bg-theme">
+                    <div className="nav-section-nav">
+                        <div className="nav-section-header">
+                            <img
+                                src={`${outer.showImage(user?.avatar, "thumb")}`}
+                                loading="lazy"
+                                className="profile-pic"
+                            />
+                            <h3 className="profile-name">{user?.first_name}</h3>
                         </div>
-                        <div className="nav-section-close" onClick={() => setViewSideNav(!viewSidenav)}></div>
+                        <SideNav />
                     </div>
-                </aside>
+                    <div className="nav-section-close" onClick={() => setViewSideNav(!viewSidenav)}></div>
+                </div>
+            </aside>
 
-                <main>
+            <div className="container">
+                <main className="bg-dark">
                     <div className="topnav bg-theme">
                         <div className="topnav-left">
                             {dashParams.hasBack &&

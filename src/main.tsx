@@ -21,6 +21,7 @@ import UserIndexPage from "./pages/user/UserIndexPage";
 import UserCreatePage from "./pages/user/UserCreatePage";
 import UserEditPage from "./pages/user/UserEditPage";
 import UserShowPage from "./pages/user/UserShowPage";
+import ProfileSecurityPage from "./pages/user/ProfileSecurityPage";
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
@@ -45,6 +46,9 @@ createRoot(document.getElementById('root')!).render(
         <Route path="/admin/users/create" element={<UserCreatePage />} />
         <Route path="/admin/users/:id/edit" element={<UserEditPage />} />
         <Route path="/admin/users/:id/show" element={<UserShowPage />} />
+        <Route path="/admin/profile" element={<UserShowPage />} />
+        <Route path="/admin/profile/edit" element={<UserEditPage />} />
+        <Route path="/admin/profile/security" element={<ProfileSecurityPage />} />
 
       </Routes>
     </BrowserRouter>

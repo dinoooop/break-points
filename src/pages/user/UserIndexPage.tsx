@@ -67,9 +67,10 @@ const UserIndexPage: React.FC = () => {
                         <div className="card-image">
                             <Link to={`/admin/users/${item.id}/show`}>
                                 <img
-                                    src={`${outer.showImage(item.avatar, "thumb")}`}
-                                    alt={item.full_name}
+                                    src={`${outer.showImage(item.avatar, "thumb", "avatar")}`}
+                                    alt={item.first_name}
                                     loading="lazy"
+                                    className="display-thumb-img"
                                 />
                             </Link>
                         </div>
@@ -83,7 +84,7 @@ const UserIndexPage: React.FC = () => {
                             }}
                             onClick={() => navigate(`/admin/users/${item.id}/show`)}
                         >
-                            <h3>{item.full_name}</h3>
+                            <h3>{item.first_name}</h3>
                             <p>{item.email}</p>
                         </div>
                     </div>

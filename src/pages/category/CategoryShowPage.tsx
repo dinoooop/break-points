@@ -39,7 +39,7 @@ const CategoryShowPage: React.FC = () => {
             <div className="show-details bg-dark">
                 <div className="holder">
                     <img
-                        src={`${outer.showImage(formValues.cover, 'thumb')}`}
+                        src={`${outer.showImage(formValues.cover, 'cover', 'general')}`}
                         alt={formValues.title}
                         loading="lazy"
                     />
