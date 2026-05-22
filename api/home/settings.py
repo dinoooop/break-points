@@ -27,7 +27,8 @@ SECRET_KEY = 'django-insecure-$tapne1k0-ai2r7u5j350qh=n%1d6v(k341zxuhk64@cp26_27
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'bp.dipik.in', 'www.bp.dipik.in']
+# ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'bp.dipik.in', 'www.bp.dipik.in']
+ALLOWED_HOSTS = ["*"]
 
 # Application definition
 
